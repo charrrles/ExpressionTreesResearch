@@ -11,9 +11,6 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-
-
             dynamic d1 = new ExpandoObject();
             d1.name = "Bob";
             d1.country = "Serbia";
@@ -31,41 +28,46 @@ namespace ConsoleApp1
 
             var data = new List<dynamic>() { d1, d2, d3 };
 
-            //var GetName = GetGetMemberOnObjectLambda("name");
-            //foreach (var d in data)
-            //{
-            //    Console.WriteLine(GetName(d));
-            //}
-
-            int value = 11;
-            string attrName = "code";
-            //Console.WriteLine("b: " + b);
-            var MemberEqualsValue = GetMemberEqualsValueLambda(attrName, value);
-            foreach (var d in data)
-            {
-                Console.WriteLine(MemberEqualsValue(d));
-            }
-
+            // 1 - Lambda on dynamic objects are possible
+            var name = "Bob";
             //var name = Console.ReadLine();
             //while (name != null)
-            //{
-            //    var result = data.Where(d => d.name == name);
-
-            //    if (result.Any())
-            //    {
-            //        Console.WriteLine(result.First().country);
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine("Not found");
-            //    }
+            {
+                var result = data.Where(d => d.name == name);
+                if (result.Any())
+                {
+                    Console.WriteLine($"Found object with name: {result.First().country}");
+                }
+                else
+                {
+                    Console.WriteLine("Not found");
+                }
 
             //    name = Console.ReadLine();
-            //}
+            }
 
+            // 2 - Get member is possible
+            var GetName = BuildGetMemberOnObjectLambda("name");
+            foreach (var d in data)
+            {
+                Console.WriteLine($"Object name: { GetName(d)}");
+            }
+
+            // 3 - Are comparison lambdas possible on dynamic objects?
+            // 3.1 on strings
+            var bob = "Bo";
+            bob += "b"; // Ensuring we get a separate reference.
+            Console.WriteLine($"Are refs equals: {Object.ReferenceEquals(bob, d1.name)}");
+
+            var NameIsBob = BuildMemberEqualsValueLambda("name", bob);
+            Console.WriteLine("Found Bob? " + data.Any(d => NameIsBob(d)));
+
+            // 3.2 on ints
+            var CodeIs11 = BuildMemberEqualsValueLambda("code", 11);
+            Console.WriteLine("Found Code 11? " + data.Any(d => CodeIs11(d)));
         }
 
-        static Func<dynamic, dynamic> GetGetMemberOnObjectLambda(string attrName)
+        static Func<dynamic, dynamic> BuildGetMemberOnObjectLambda(string attrName)
         {
             var binder = Binder.GetMember(
                 CSharpBinderFlags.None,
@@ -83,23 +85,29 @@ namespace ConsoleApp1
             return f;
         }
 
-        static Func<dynamic, bool> GetMemberEqualsValueLambda(string attrName, object attrValue)
+        static Func<dynamic, bool> BuildMemberEqualsValueLambda(string attrName, object attrValue)
         {
+            var param = Expression.Parameter(typeof(object));
+
             var binder = Binder.GetMember(
                 CSharpBinderFlags.None,
                 attrName,
                 typeof(Program), // or this.GetType() 
                 new[] { CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null) });
+            var member = Expression.Dynamic(
+                binder, 
+                typeof(object), // Putting return type attrValue.GetType() produces: System.InvalidOperationException: 'The result type 'System.Object' of the binder 'Microsoft.CSharp.RuntimeBinder.CSharpGetMemberBinder' is not compatible with the result type 'System.String' expected by the call site.'
+                param); 
 
-            var par = Expression.Parameter(typeof(object));
-
-            var member = Expression.Dynamic(binder, typeof(int), par);
             var value = Expression.Constant(attrValue);
-            Expression equal = Expression.Equal(member, value);
+            
+            var memberConverted = Expression.Convert(member, value.Type);
+
+            Expression equal = Expression.Equal(memberConverted, value);
 
             Func<dynamic, bool> f = Expression.Lambda<Func<dynamic, bool>>(
                 equal,
-                par)
+                param)
                 .Compile();
 
             return f;
