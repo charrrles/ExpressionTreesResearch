@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressionTreesResearch", "ExpressionTreesResearch\ExpressionTreesResearch.csproj", "{F72907D6-CF89-4DD3-9771-22E99FC4EEEC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTestProject1", "NUnitTestProject1\NUnitTestProject1.csproj", "{223C497C-CD19-43C9-AE18-47CA99974FC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F72907D6-CF89-4DD3-9771-22E99FC4EEEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F72907D6-CF89-4DD3-9771-22E99FC4EEEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F72907D6-CF89-4DD3-9771-22E99FC4EEEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{223C497C-CD19-43C9-AE18-47CA99974FC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{223C497C-CD19-43C9-AE18-47CA99974FC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{223C497C-CD19-43C9-AE18-47CA99974FC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{223C497C-CD19-43C9-AE18-47CA99974FC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
