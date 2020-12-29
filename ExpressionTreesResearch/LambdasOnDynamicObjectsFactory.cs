@@ -14,7 +14,7 @@ namespace ExpressionTreesResearch
             var binder = Binder.GetMember(
                 CSharpBinderFlags.None,
                 attrName,
-                typeof(ConsoleApp1.Program), // or this.GetType() 
+                typeof(LambdasOnDynamicObjectsFactory), 
                 new[] { CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null) });
 
             var par = Expression.Parameter(typeof(object));
@@ -34,7 +34,7 @@ namespace ExpressionTreesResearch
             var binder = Binder.GetMember(
                 CSharpBinderFlags.None,
                 attrName,
-                typeof(ConsoleApp1.Program), // or this.GetType() 
+                typeof(LambdasOnDynamicObjectsFactory),
                 new[] { CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null) });
             var member = Expression.Dynamic(
                 binder,
